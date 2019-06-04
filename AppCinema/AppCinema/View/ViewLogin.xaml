@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodelogin="clr-namespace:AppCinema.ViewModel"
+             x:Class="AppCinema.View.ViewLogin">
+    <ContentPage.BindingContext>
+        <viewmodelogin:ViewModelLogin/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <StackLayout >
+            <Label Text="Welcome " FontSize="50" HorizontalOptions="Center" />
+            <Label Text="Cinema" TextColor="Red" FontSize="35" HorizontalOptions="Center" />
+            <Image Source="popcorn256px.png" HorizontalOptions="FillAndExpand" />
+
+            <StackLayout Orientation="Vertical" VerticalOptions="CenterAndExpand">
+            <Entry Placeholder="Username" FontSize="40" HorizontalTextAlignment="Center"  Text="{Binding user}"  />
+
+
+            <Entry Placeholder="Password" IsPassword="True" FontSize="40" HorizontalTextAlignment="Center"  Text="{Binding pass}" />
+            </StackLayout>
+            <Button Text="Login" Margin="80,20" TextColor="Red" FontSize="20" Padding="20" Command="{Binding Logueo}" />
+         
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
