@@ -14,8 +14,9 @@ namespace AppCinema.ViewModel
     public class ViewModelBuscar : ViewModelBase
     {
         RepositoryMovie repoMovie;
+        RepositoryCinema repoCine;
         private ObservableCollection<DiscoverMovie> _Movies;
-        private object e;
+        public String CadenaBuscar;
 
         public ObservableCollection<DiscoverMovie> Movies
         {
@@ -32,14 +33,16 @@ namespace AppCinema.ViewModel
             {
                 return new Command(async (movie) =>
                 {
-                    //Recuperamos la pelicula
                     DiscoverMovie tappedMovie = movie as DiscoverMovie;
-                    //Creamos el viewmodel y vinculamos la pelicula                    
-                    App.Locator.ViewModelPelicula.Movie = await repoMovie.GetMovie(tappedMovie.ID);                    
-                    //Creamos la nueva view y vinculamos el viewmodel                    
-                    App.Locator.ViewPelicula.BindingContext = App.Locator.ViewModelPelicula;
-                    //Pusheamos la navegación
-                    await Application.Current.MainPage.Navigation.PushModalAsync(App.Locator.ViewPelicula);
+                    ViewModelPelicula viewmodel = new ViewModelPelicula();
+                    viewmodel.Movie = await repoMovie.GetMovie(tappedMovie.ID);
+                    ViewPelicula view = new ViewPelicula();                    
+                    if (App.Locator.SessionService != null)
+                    {
+                        viewmodel.InList = await repoCine.CheckInList(tappedMovie.ID, App.Locator.SessionService.Email);
+                    }                        
+                    view.BindingContext = viewmodel;
+                    await Application.Current.MainPage.Navigation.PushModalAsync(view);
 
                 });
             }
@@ -47,8 +50,9 @@ namespace AppCinema.ViewModel
         public ViewModelBuscar()
         {
             repoMovie = new RepositoryMovie();
+            repoCine = new RepositoryCinema();
             Task.Run(async() => {
-                DiscoverMovieRequest request = await repoMovie.SearchMovie("avengers");
+                DiscoverMovieRequest request = await repoMovie.SearchMovie(CadenaBuscar);
                 this.Movies = new ObservableCollection<DiscoverMovie>(request.Movies);
             });
         }
